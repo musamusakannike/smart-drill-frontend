@@ -118,7 +118,7 @@ const Dashboard = () => {
               Real-Time Progress Tracking
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
-              See how you're progressing over time with detailed analytics.
+              See how you&apos;re progressing over time with detailed analytics.
             </p>
           </div>
 
