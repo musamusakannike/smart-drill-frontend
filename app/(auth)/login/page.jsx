@@ -28,7 +28,7 @@ const Login = () => {
 
     try {
       const response = await apiRequest("auth/login", "POST", formData, {}, false);
-      localStorage.setItem("token", response.token);
+      localStorage.setItem("token", response.data.token);
       setMessage({
         type: "success",
         text: "Login successful! Redirecting...",
