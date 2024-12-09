@@ -50,22 +50,28 @@ const TestimonialSection = () => {
         {/* Swiper Carousel */}
         <div className="mt-12">
           <Swiper
-            spaceBetween={50}
-            slidesPerView={3}
+            spaceBetween={20} // Adjust spacing between slides
+            slidesPerView={1} // Default to 1 slide per view
             loop={true}
             autoplay={{ delay: 4000 }}
             breakpoints={{
-              1024: {
-                slidesPerView: 2,
+              640: {
+                slidesPerView: 1,
+                spaceBetween: 30,
               },
               768: {
-                slidesPerView: 1,
+                slidesPerView: 2,
+                spaceBetween: 40,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 50,
               },
             }}
           >
             {testimonials.map((testimonial) => (
               <SwiperSlide key={testimonial.id}>
-                <div className="p-6 mx-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow text-left">
+                <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow text-left">
                   <div className="flex items-center gap-4">
                     <img
                       src={testimonial.avatar}
