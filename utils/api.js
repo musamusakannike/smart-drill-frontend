@@ -9,6 +9,7 @@ const BASE_URL = "https://smart-drill-backend.onrender.com/api/v1";
  * @returns {Promise<object>} - The response data from the API.
  * @throws {Error} - Throws an error if the request fails.
  */
+
 export const apiRequest = async (
   endpoint,
   method,
@@ -18,10 +19,8 @@ export const apiRequest = async (
 ) => {
   const token = localStorage.getItem("token");
 
-  if (!token) {
-    if (needsToken) {
-      throw new Error("Your session has expired. Please login again.");
-    }
+  if (!token && needsToken) {
+    throw new Error("Session expired. Please login again.");
   }
 
   const url = `${BASE_URL}/${endpoint}`;
@@ -43,13 +42,33 @@ export const apiRequest = async (
     const response = await fetch(url, options);
 
     if (!response.ok) {
+      // Parse response error data
       const errorData = await response.json();
-      throw new Error(`${errorData.message || response.statusText}`);
+
+      // Log detailed error to console for developers
+      console.error("API request failed:", {
+        url,
+        status: response.status,
+        message: errorData.message,
+      });
+
+      // Throw a generic error message
+      const genericMessage =
+        response.status === 401
+          ? "Unauthorized access. Please check your credentials."
+          : response.status === 403
+          ? "You do not have permission to perform this action."
+          : response.status >= 500
+          ? "A server error occurred. Please try again later."
+          : "An error occurred while processing your request. Please try again.";
+
+      throw new Error(genericMessage);
     }
 
     return await response.json();
   } catch (error) {
-    console.error("API request failed:", error);
-    throw error;
+    // Additional fallback for unexpected errors
+    console.error("Unexpected error:", error);
+    throw new Error("An unexpected error occurred. Please try again later.");
   }
 };
