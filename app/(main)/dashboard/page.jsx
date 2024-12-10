@@ -2,19 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/utils/api";
-import { BookOpen, Edit3, HelpCircle } from "lucide-react";
+import { BookOpen, Edit3, HelpCircle, Search } from "lucide-react";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [showAdminModal, setShowAdminModal] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const userData = await apiRequest("user/me", "GET");
-        console.log(userData)
+        console.log(userData);
         setUser(userData);
+        if (userData?.data?.user?.role === "admin") {
+          setShowAdminModal(true);
+        }
       } catch (error) {
         console.error("Failed to fetch user details:", error.message);
       } finally {
@@ -25,6 +29,10 @@ const Dashboard = () => {
     fetchUser();
   }, []);
 
+  const handleNavigateToAdmin = () => {
+    window.location.href = "/admin/dashboard"; // Navigate to admin dashboard
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
@@ -32,7 +40,9 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Greeting */}
           <h1 className="text-2xl font-bold text-blue-900 dark:text-blue-300">
-            {loading ? "Loading..." : `Hello, ${user?.data.user.fullname || "Student"}!`}
+            {loading
+              ? "Loading..."
+              : `Hello, ${user?.data?.user?.fullname || "Student"}!`}
           </h1>
 
           {/* Search Bar */}
@@ -45,20 +55,7 @@ const Dashboard = () => {
               className="w-full p-2 pl-10 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <span className="absolute inset-y-0 left-2 flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-gray-400 dark:text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 10l6 6m-6-6h.01M10 10a6 6 0 1111.548-1.636A9.993 9.993 0 0110 10z"
-                />
-              </svg>
+              <Search className="h-5 w-5 text-gray-400 dark:text-gray-500" />
             </span>
           </div>
         </div>
@@ -132,6 +129,35 @@ const Dashboard = () => {
           </div>
         </div>
       </main>
+
+      {/* Admin Modal */}
+      {showAdminModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-bold text-blue-900 dark:text-white">
+              Admin Dashboard
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mt-4">
+              You have admin privileges. Would you like to go to the admin
+              dashboard?
+            </p>
+            <div className="mt-6 flex justify-end gap-4">
+              <button
+                onClick={() => setShowAdminModal(false)}
+                className="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-400 dark:hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleNavigateToAdmin}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Go to Admin
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
