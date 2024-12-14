@@ -2,8 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/utils/api";
-import { Edit3, Trash2, Search } from "lucide-react";
+import {
+  Edit3,
+  Trash2,
+  Search,
+  CheckCircle,
+  XCircle,
+  PlusCircle,
+} from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
+import { RotateLoader } from "react-spinners";
+import Link from "next/link";
 
 const QuestionsPage = () => {
   const [questions, setQuestions] = useState([]);
@@ -11,6 +20,9 @@ const QuestionsPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [editMode, setEditMode] = useState(null);
   const { showToast } = useToast();
 
   // Fetch paginated questions
@@ -38,17 +50,36 @@ const QuestionsPage = () => {
     setSearch(e.target.value);
   };
 
+  // Update question
+  const handleUpdateQuestion = async (questionId, updatedDetails) => {
+    try {
+      setUpdateLoading(true);
+      await apiRequest(`questions/${questionId}`, "PUT", updatedDetails);
+      showToast("Question updated successfully!", "success");
+      setEditMode(null); // Exit edit mode
+      fetchQuestions(); // Refresh the question list
+    } catch (error) {
+      console.error("Failed to update question:", error.message);
+      showToast("Failed to update question.", "error");
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
   // Delete question
   const handleDeleteQuestion = async (questionId) => {
     if (!confirm("Are you sure you want to delete this question?")) return;
 
     try {
+      setDeleteLoading(true);
       await apiRequest(`questions/${questionId}`, "DELETE");
-      showToast("Question deleted successfully!", "success")
+      showToast("Question deleted successfully!", "success");
       fetchQuestions(); // Refresh the question list after deletion
     } catch (error) {
       console.error("Failed to delete question:", error.message);
       showToast("Failed to delete question.", "error");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -85,9 +116,17 @@ const QuestionsPage = () => {
 
       {/* Question List */}
       <main className="max-w-7xl mx-auto px-6 py-10">
-        <h2 className="text-2xl font-extrabold text-blue-900 dark:text-white mb-6">
-          Question Management
-        </h2>
+        <div className="flex w-full justify-between items-center mb-6">
+          <h2 className="text-2xl font-extrabold text-blue-900 dark:text-white">
+            Question Management
+          </h2>
+          <Link
+            href={"/admin/questions/new"}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-1 font-semibold text-lg"
+          >
+            <PlusCircle /> Add Question
+          </Link>
+        </div>
 
         {loading ? (
           <p className="text-center text-gray-600 dark:text-gray-300">
@@ -100,46 +139,125 @@ const QuestionsPage = () => {
                 key={question._id}
                 className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
-                <h3 className="text-lg font-bold text-blue-900 dark:text-white mb-2">
-                  {question.question}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-2">
-                  Options:
-                </p>
-                <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 mb-2">
-                  {question.options.map((option, index) => (
-                    <li key={index}>
-                      {index + 1}. {option}
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-gray-600 dark:text-gray-300 mb-2">
-                  <strong>Correct Option:</strong> {question.correctOption}
-                </p>
-                <p className="text-gray-600 dark:text-gray-300 mb-2">
-                  <strong>Explanation:</strong>{" "}
-                  {question.explanation.split(".")[0]}.
-                </p>
-                <p className="text-gray-600 dark:text-gray-300 mb-2">
-                  <strong>Tags:</strong> {question.tags.join(", ")}
-                </p>
-                <p className="text-gray-600 dark:text-gray-300 mb-2">
-                  <strong>Course:</strong> {question.course}
-                </p>
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => console.log("Edit question:", question._id)} // Implement edit functionality
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                  >
-                    <Edit3 className="inline w-5 h-5" /> Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteQuestion(question._id)}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                  >
-                    <Trash2 className="inline w-5 h-5" /> Delete
-                  </button>
-                </div>
+                {editMode === question._id ? (
+                  // Edit Mode
+                  <div>
+                    <input
+                      type="text"
+                      defaultValue={question.question}
+                      className="w-full p-2 mb-2 border border-gray-300 rounded dark:bg-gray-700 dark:text-gray-300"
+                      onChange={(e) => (question.question = e.target.value)}
+                    />
+                    {question.options.map((option, index) => (
+                      <input
+                        key={index}
+                        type="text"
+                        defaultValue={option}
+                        className="w-full p-2 mb-2 border border-gray-300 rounded dark:bg-gray-700 dark:text-gray-300"
+                        onChange={(e) =>
+                          (question.options[index] = e.target.value)
+                        }
+                      />
+                    ))}
+                    <input
+                      type="number"
+                      min="1"
+                      max="4"
+                      defaultValue={question.correctOption}
+                      className="w-full p-2 mb-2 border border-gray-300 rounded dark:bg-gray-700 dark:text-gray-300"
+                      onChange={(e) =>
+                        (question.correctOption = parseInt(e.target.value))
+                      }
+                    />
+                    <input
+                      type="text"
+                      defaultValue={question.explanation}
+                      className="w-full p-2 mb-2 border border-gray-300 rounded dark:bg-gray-700 dark:text-gray-300"
+                      onChange={(e) => (question.explanation = e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      defaultValue={question.tags.join(", ")}
+                      className="w-full p-2 mb-2 border border-gray-300 rounded dark:bg-gray-700 dark:text-gray-300"
+                      onChange={(e) =>
+                        (question.tags = e.target.value.split(", "))
+                      }
+                    />
+                    <input
+                      type="text"
+                      defaultValue={question.course}
+                      className="w-full p-2 mb-2 border border-gray-300 rounded dark:bg-gray-700 dark:text-gray-300"
+                      onChange={(e) => (question.course = e.target.value)}
+                    />
+                    <div className="flex gap-4">
+                      <button
+                        onClick={() =>
+                          handleUpdateQuestion(question._id, question)
+                        }
+                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                      >
+                        {updateLoading ? (
+                          "Saving..."
+                        ) : (
+                          <>
+                            <CheckCircle className="inline w-5 h-5" /> Save
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => setEditMode(null)}
+                        className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+                      >
+                        <XCircle className="inline w-5 h-5" /> Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  // View Mode
+                  <div>
+                    <h3 className="text-lg font-bold text-blue-900 dark:text-white mb-2">
+                      {question.question}
+                    </h3>
+                    <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 mb-2">
+                      {question.options.map((option, index) => (
+                        <li key={index}>
+                          {index + 1}. {option}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="text-gray-600 dark:text-gray-300 mb-2">
+                      <strong>Correct Option:</strong> {question.correctOption}
+                    </p>
+                    <p className="text-gray-600 dark:text-gray-300 mb-2">
+                      <strong>Tags:</strong> {question.tags.join(", ")}
+                    </p>
+                    <div className="flex gap-4">
+                      <button
+                        onClick={() => setEditMode(question._id)}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                      >
+                        <Edit3 className="inline w-5 h-5" /> Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteQuestion(question._id)}
+                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                      >
+                        {deleteLoading ? (
+                          <div className="w-screen h-screen flex flex-col justify-center items-center bg-black opacity-90 fixed top-0 left-0">
+                            <RotateLoader color="#2563eb" />
+                            <p className="text-center text-gray-700 dark:text-gray-300 mt-7">
+                              Deleting...
+                            </p>
+                          </div>
+                        ) : (
+                          <>
+                            <Trash2 className="inline w-5 h-5" /> Delete
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
