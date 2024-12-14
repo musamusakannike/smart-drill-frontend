@@ -1,7 +1,7 @@
 "use client";
 
 import { apiRequest } from "@/utils/api";
-import { User, FileText, PlusCircle, Edit3, Trash2 } from "lucide-react";
+import { User, FileText } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const AdminDashboard = () => {
@@ -53,20 +53,6 @@ const AdminDashboard = () => {
             </p>
           </div>
 
-          {/* Add New Question */}
-          <div
-            onClick={() => (window.location.href = "/admin/questions/new")}
-            className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer text-center"
-          >
-            <PlusCircle className="w-12 h-12 mx-auto text-blue-500 mb-4" />
-            <h3 className="text-xl font-bold text-blue-900 dark:text-white">
-              Add New Question
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Add a new question to the database.
-            </p>
-          </div>
-
           {/* View All Questions */}
           <div
             onClick={() => (window.location.href = "/admin/questions")}
@@ -78,34 +64,6 @@ const AdminDashboard = () => {
             </h3>
             <p className="text-gray-600 dark:text-gray-300">
               View and manage the list of all questions.
-            </p>
-          </div>
-
-          {/* Update a Question */}
-          <div
-            onClick={() => (window.location.href = "/admin/questions/update")}
-            className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer text-center"
-          >
-            <Edit3 className="w-12 h-12 mx-auto text-blue-500 mb-4" />
-            <h3 className="text-xl font-bold text-blue-900 dark:text-white">
-              Update Question
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Edit the details of an existing question.
-            </p>
-          </div>
-
-          {/* Delete a Question */}
-          <div
-            onClick={() => (window.location.href = "/admin/questions/delete")}
-            className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer text-center"
-          >
-            <Trash2 className="w-12 h-12 mx-auto text-blue-500 mb-4" />
-            <h3 className="text-xl font-bold text-blue-900 dark:text-white">
-              Delete Question
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Remove a question from the database.
             </p>
           </div>
         </div>
