@@ -11,6 +11,8 @@ const UsersPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [saveUpdateLoading, setSaveUpdateLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const { showToast } = useToast();
 
@@ -44,18 +46,22 @@ const UsersPage = () => {
     if (!confirm("Are you sure you want to delete this user?")) return;
 
     try {
+      setDeleteLoading(true);
       await apiRequest(`user/${userId}`, "DELETE");
       showToast("User deleted successfully!", "success");
       fetchUsers(); // Refresh the user list after deletion
     } catch (error) {
       console.error("Failed to delete user:", error.message);
       showToast("Failed to delete user.", "error");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
   // Update user
   const handleUpdateUser = async (userId, updatedDetails) => {
     try {
+      setSaveUpdateLoading(true);
       await apiRequest(`user/${userId}`, "PUT", updatedDetails);
       showToast("User details updated successfully!", "success");
       setEditUser(null); // Close edit mode
@@ -63,6 +69,8 @@ const UsersPage = () => {
     } catch (error) {
       console.error("Failed to update user:", error.message);
       showToast("Failed to update user.", "error");
+    } finally {
+      setSaveUpdateLoading(false);
     }
   };
 
@@ -144,7 +152,7 @@ const UsersPage = () => {
                         onClick={() => handleUpdateUser(user._id, user)}
                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                       >
-                        Save
+                        {saveUpdateLoading ? "Updating..." : "Save"}
                       </button>
                       <button
                         onClick={() => setEditUser(null)}
@@ -177,7 +185,13 @@ const UsersPage = () => {
                         onClick={() => handleDeleteUser(user._id)}
                         className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                       >
-                        <Trash2 className="inline w-5 h-5" /> Delete
+                        {deleteLoading ? (
+                          "Deleting"
+                        ) : (
+                          <>
+                            <Trash2 className="inline w-5 h-5" /> Delete
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>
