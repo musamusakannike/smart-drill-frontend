@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/utils/api";
 import { BookOpen, Edit3, HelpCircle, Search } from "lucide-react";
+import Link from "next/link";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -88,7 +89,7 @@ const Dashboard = () => {
           </div>
 
           {/* Brainstorm with AI */}
-          <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center">
+          <Link href={"/chat"} className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center">
             <HelpCircle className="w-12 h-12 mx-auto text-blue-500 mb-4" />
             <h2 className="text-xl font-bold text-blue-900 dark:text-white">
               Brainstorm with AI
@@ -96,14 +97,14 @@ const Dashboard = () => {
             <p className="text-gray-600 dark:text-gray-300">
               Use AI to brainstorm and understand complex topics with ease.
             </p>
-          </div>
+          </Link>
         </div>
 
         {/* More Features */}
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow">
             <h3 className="text-lg font-bold text-blue-900 dark:text-white">
-              Personalized Recommendations
+              Study Materials
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
               Get study materials tailored to your specific needs.
