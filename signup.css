@@ -1,0 +1,181 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter";
+}
+
+:root {
+    --color-primary: #3456FF;
+    --color-secondary: #F8F8FA;
+    --bg-color: white;
+}
+
+.container {
+    max-width: 100%;
+    padding: 2em 4em;
+    background-color: var(--bg-color);
+    margin-bottom: 3em;
+}
+
+.logo {
+    color: #7072c4;
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 1em;
+}
+.logo span {
+    color: #3456FF;
+}
+
+header {
+    font-weight: bolder;
+    font-size: 3rem;
+    padding-top: 1em;
+    letter-spacing: -1px;
+    text-align: center;
+}
+
+p {
+    font-size: 1.2rem;
+    color: #4A4A4A;
+    text-align: center;
+}
+
+.sign a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+#form {
+    width: 100%;
+    max-width: 700px;
+    margin: 3em auto;
+}
+
+.single-input {
+    position: relative;
+    width: 100%;
+    margin: 2em 0;
+}
+
+.input {
+    background-color: white;
+    border: 2px solid #e2dfdf;
+    outline: none;
+    padding: 1.25em 1em;
+    width: 100%;
+    border-radius: 15px;
+    font-size: 1rem;
+}
+
+input::placeholder {
+    color: #a9a9a9;
+    font-style: italic;
+}
+
+.label {
+    font-size: 1.2rem;
+    display: block;
+    position: absolute;
+    top: -0.7em;
+    padding: 5px;
+    background-color: var(--bg-color);
+    left: 1.5em;
+    color: black;
+    font-weight: bold;
+}
+
+button {
+    width: 100%;
+    background-color: var(--color-primary);
+    outline: none;
+    padding: 1.2em 0em;
+    border: none;
+    border-radius: 15px;
+    color: var(--color-secondary);
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.inputColor {
+    border-color: var(--color-primary);
+}
+.label-change {
+    color: var(--color-primary);
+}
+
+.error {
+    color: red;
+    font-size: 0.8rem;
+    font-style: italic;
+    margin-top: 0.2em;
+    margin-left: 0.5em;
+    position: absolute;
+    top: 100%;
+}
+
+.input-error {
+    border: 2px solid red;
+}
+.label-error {
+    color: red;
+}
+
+@media (min-width: 1024px) {
+    .input, button {
+        width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1em 2em;
+    }
+
+    header {
+        font-size: 2rem;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+
+    .logo {
+        font-size: 2.5rem;
+    }
+
+    .label {
+        left: 1em;
+        font-size: 1rem;
+    }
+
+    button {
+        padding: 1em 0;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        font-size: 1.8rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+    }
+
+    .logo {
+        font-size: 2rem;
+    }
+
+    .label {
+        font-size: 0.9rem;
+        left: 0.8em;
+    }
+
+    button {
+        padding: 0.8em 0;
+        font-size: 0.8rem;
+    }
+}
