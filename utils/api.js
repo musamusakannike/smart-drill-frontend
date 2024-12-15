@@ -69,6 +69,6 @@ export const apiRequest = async (
   } catch (error) {
     // Additional fallback for unexpected errors
     console.error("Unexpected error:", error);
-    throw new Error("An unexpected error occurred. Please try again later.");
+    throw new Error(error);
   }
 };
