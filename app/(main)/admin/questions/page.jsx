@@ -231,6 +231,9 @@ const QuestionsPage = () => {
                     <p className="text-gray-600 dark:text-gray-300 mb-2">
                       <strong>Tags:</strong> {question.tags.join(", ")}
                     </p>
+                    <p className="text-gray-600 dark:text-gray-300 mb-2">
+                      <strong>Course:</strong> {question.course}
+                    </p>
                     <div className="flex gap-4">
                       <button
                         onClick={() => setEditMode(question._id)}
