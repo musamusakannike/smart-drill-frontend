@@ -5,3 +5,13 @@
 html, body {
   @apply max-w-[100vw] w-screen overflow-x-hidden h-screen overflow-y-scroll;
 }
+
+/* Perspective utility */
+.perspective {
+  perspective: 1000px;
+}
+
+/* Backface visibility */
+.backface-hidden {
+  backface-visibility: hidden;
+}
