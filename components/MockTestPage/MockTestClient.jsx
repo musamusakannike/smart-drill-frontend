@@ -3,29 +3,48 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiRequest } from "@/utils/api";
+import "animate.css"; // Import animate.css
+import confetti from "canvas-confetti";
 
 const MockTestClient = ({ course }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [countdown, setCountdown] = useState(1200); // 20 minutes in seconds
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // New error state
   const [sessionId, setSessionId] = useState(null);
+  const [showResult, setShowResult] = useState(false); // Result modal visibility
+  const [result, setResult] = useState(null); // Test result
   const router = useRouter();
 
   // Fetch questions when the component mounts
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const response = await apiRequest(`mock-test?course=${course}`, "GET");
-        setQuestions(response.data.questions);
-        setSessionId(response.data.sessionId);
-        setAnswers(new Array(response.data.questions.length).fill(null));
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch questions:", error.message);
-      }
-    };
+  const fetchQuestions = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiRequest(`mock-test?course=${course}`, "GET");
+      setQuestions(response.data.questions);
+      setSessionId(response.data.sessionId);
+      setAnswers(new Array(response.data.questions.length).fill(null));
+    } catch (error) {
+      console.error("Failed to fetch questions:", error.message);
+      setError(
+        error.response?.data?.message || "No questions found for this course."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const triggerConfetti = () => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  };
+
+  useEffect(() => {
     fetchQuestions();
   }, [course]);
 
@@ -50,13 +69,33 @@ const MockTestClient = ({ course }) => {
         sessionId,
         answers,
       });
-      alert(`Test submitted! You scored ${response.data.score}`);
-      router.push("/dashboard"); // Redirect after submission
+      setResult(response.data); // Save the result
+      setShowResult(true); // Show the result modal
+      triggerConfetti(); // Trigger confetti animation when the test is submitted
     } catch (error) {
       console.error("Failed to submit test:", error.message);
+      alert("Failed to submit test. Please try again.");
     }
   };
 
+  // Error Handling UI
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
+        <p className="text-center text-xl text-red-600 dark:text-red-400 mb-4">
+          {error}
+        </p>
+        <button
+          onClick={fetchQuestions}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  // Loading State UI
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
@@ -112,6 +151,32 @@ const MockTestClient = ({ course }) => {
           Submit Test
         </button>
       </div>
+
+      {/* Result Modal */}
+      {showResult && result && (
+        <>
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full animate__animated animate__fadeIn">
+              <h2 className="text-xl font-bold text-blue-900 dark:text-white">
+                {result.percentage >= 80
+                  ? "Congratulations!"
+                  : result.percentage >= 50
+                  ? "Well Done!"
+                  : "Better Luck Next Time!"}
+              </h2>
+              <p className="text-gray-700 dark:text-gray-300 mt-4">
+                You scored {result.score}/{result.total} ({result.percentage}%)
+              </p>
+              <button
+                onClick={() => router.push("/dashboard")}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Return to Dashboard
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
