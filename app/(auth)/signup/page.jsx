@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { apiRequest } from "@/utils/api";
+import Link from "next/link";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -64,13 +65,13 @@ const SignUp = () => {
           Create an Account
         </h1>
         <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
-          Don&apos;t have an account?{" "}
-          <a
-            href="/signup"
+          Already have an account?{" "}
+          <Link
+            href="/login"
             className="text-blue-600 dark:text-blue-400 hover:underline"
           >
-            Sign Up
-          </a>
+            Login
+          </Link>
         </p>
         <form onSubmit={handleSubmit} className="mt-6 space-y-6">
           {/* Full Name Input */}
