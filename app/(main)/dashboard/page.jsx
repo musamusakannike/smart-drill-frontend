@@ -66,7 +66,10 @@ const Dashboard = () => {
       <main className="max-w-7xl mx-auto px-6 md:px-12 py-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Past Questions */}
-          <Link href={"/past-questions"} className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center">
+          <Link
+            href={"/past-questions"}
+            className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center"
+          >
             <BookOpen className="w-12 h-12 mx-auto text-blue-500 mb-4" />
             <h2 className="text-xl font-bold text-blue-900 dark:text-white">
               Past Questions
@@ -78,7 +81,10 @@ const Dashboard = () => {
           </Link>
 
           {/* Mock Tests */}
-          <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center">
+          <Link
+            href={"/mock-test"}
+            className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center"
+          >
             <Edit3 className="w-12 h-12 mx-auto text-blue-500 mb-4" />
             <h2 className="text-xl font-bold text-blue-900 dark:text-white">
               Mock Tests
@@ -86,10 +92,13 @@ const Dashboard = () => {
             <p className="text-gray-600 dark:text-gray-300">
               Take mock tests to practice and track your progress for exams.
             </p>
-          </div>
+          </Link>
 
           {/* Brainstorm with AI */}
-          <Link href={"/chat"} className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center">
+          <Link
+            href={"/chat"}
+            className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center"
+          >
             <HelpCircle className="w-12 h-12 mx-auto text-blue-500 mb-4" />
             <h2 className="text-xl font-bold text-blue-900 dark:text-white">
               Brainstorm with AI
