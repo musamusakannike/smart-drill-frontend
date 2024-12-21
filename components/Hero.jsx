@@ -91,12 +91,12 @@ const HeroSection = () => {
                 </a>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/signup"
                   className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 transition-all"
                 >
                   Sign Up
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
