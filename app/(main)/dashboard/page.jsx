@@ -129,14 +129,14 @@ const Dashboard = () => {
             </p>
           </div>
 
-          <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+          <Link href={"/community"} className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow">
             <h3 className="text-lg font-bold text-blue-900 dark:text-white">
               Community Support
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
               Engage with fellow students and share knowledge.
             </p>
-          </div>
+          </Link>
         </div>
       </main>
 

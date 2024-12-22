@@ -10,7 +10,7 @@ const Loading = () => {
         <MoonLoader
           size={60}
           color="#3b82f6" // Tailwind blue-500
-          className="mb-6"
+          className="mb-6 mx-auto"
         />
         {/* Loading Text */}
         <h1 className="text-2xl font-bold text-blue-900 dark:text-blue-300">
