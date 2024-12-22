@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { apiRequest } from "@/utils/api";
+import { PlusCircle } from "lucide-react";
+import Link from "next/link";
 
 const AdminCommunitiesPage = () => {
   const [communities, setCommunities] = useState([]);
@@ -97,9 +99,17 @@ const AdminCommunitiesPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-5xl mx-auto px-6 py-10">
-        <h1 className="text-3xl font-bold text-blue-900 dark:text-blue-300 mb-8">
-          Manage Communities
-        </h1>
+        <div className="flex w-full justify-between items-center flex-col md:flex-row mb-3">
+          <h1 className="text-3xl font-bold text-blue-900 dark:text-blue-300 mb-8">
+            Manage Communities
+          </h1>
+          <Link
+            href={"/admin/communities/new"}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-1 font-semibold text-lg"
+          >
+            <PlusCircle /> Add Community
+          </Link>
+        </div>
 
         {editMode ? (
           <div className="mb-6 bg-white dark:bg-gray-800 p-4 rounded-md shadow">
