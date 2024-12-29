@@ -1,5 +1,6 @@
-"use client"
-import React, { useState, useEffect } from "react";
+"use client";
+import React, { useEffect } from "react";
+import "animate.css";
 
 const Toast = ({ message, type, isOpen, onClose }) => {
   useEffect(() => {
@@ -21,10 +22,14 @@ const Toast = ({ message, type, isOpen, onClose }) => {
   };
 
   return (
+    <div className="absolute bottom-5 w-screen flex justify-center items-center">
     <div
-      className={`fixed bottom-5 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded shadow-md text-sm ${typeStyles[type]}`}
+      className={`mx-auto text-center px-4 py-2 rounded shadow-md text-sm animate__animated animate__slideInUp animate__fast 
+      ${typeStyles[type]} 
+      w-11/12 max-w-sm sm:w-full sm:max-w-md md:text-base`}
     >
       {message}
+    </div>
     </div>
   );
 };
