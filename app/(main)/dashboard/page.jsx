@@ -112,14 +112,14 @@ const Dashboard = () => {
             </p>
           </div>
 
-          <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+          <Link href={"/search"} className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow">
             <h3 className="text-lg font-bold text-blue-900 dark:text-white">
-              Real-Time Progress Tracking
+              Search Questions
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
-              See how you&apos;re progressing over time with detailed analytics.
+              Search for specific questions and answers using efficient filters.
             </p>
-          </div>
+          </Link>
 
           <Link href={"/community"} className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow">
             <h3 className="text-lg font-bold text-blue-900 dark:text-white">
