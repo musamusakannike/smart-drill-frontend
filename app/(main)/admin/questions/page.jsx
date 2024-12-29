@@ -30,7 +30,7 @@ const QuestionsPage = () => {
     setLoading(true);
     try {
       const response = await apiRequest(
-        `questions?page=${page}&limit=9&search=${search}`,
+        `questions?page=${page}&limit=15&search=${search}`,
         "GET"
       );
       const { questions, totalPages: total } = response.data;
