@@ -2,14 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/utils/api";
-import { BookOpen, Edit3, HelpCircle, Search } from "lucide-react";
+import { BookOpen, Edit3, HelpCircle } from "lucide-react";
+import { useToast } from "@/contexts/ToastContext";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
   const [showAdminModal, setShowAdminModal] = useState(false);
+  const { showToast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -21,7 +24,10 @@ const Dashboard = () => {
           setShowAdminModal(true);
         }
       } catch (error) {
-        console.error("Failed to fetch user details:", error.message);
+        showToast("Failed to fetch user details, switching to login", "error");
+        setTimeout(() => {
+          router.replace("/login");
+        }, 1500);
       } finally {
         setLoading(false);
       }
@@ -45,20 +51,6 @@ const Dashboard = () => {
               ? "Loading..."
               : `Hello, ${user?.data?.user?.fullname || "Student"}!`}
           </h1>
-
-          {/* Search Bar */}
-          <div className="relative w-1/2">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search for past questions, mock tests, etc..."
-              className="w-full p-2 pl-10 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <span className="absolute inset-y-0 left-2 flex items-center">
-              <Search className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-            </span>
-          </div>
         </div>
       </header>
 
