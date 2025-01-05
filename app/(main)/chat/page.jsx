@@ -119,7 +119,7 @@ const ChatWithAI = () => {
         </div>
 
         {/* Input Area */}
-        <div className="mt-6 flex items-center">
+        <form className="mt-6 flex items-center">
           <input
             type="text"
             value={input}
@@ -134,7 +134,7 @@ const ChatWithAI = () => {
           >
             {loading ? <Loader className="w-5 h-5 animate-spin" /> : <Send />}
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
