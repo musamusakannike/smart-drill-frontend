@@ -16,9 +16,9 @@ const MockTestClient = ({ course }) => {
   const [showResult, setShowResult] = useState(false); // Result modal visibility
   const [result, setResult] = useState(null); // Test result
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [showCorrections, setShowCorrections] = useState(false); // Toggle corrections view
   const router = useRouter();
 
-  // Fetch questions when the component mounts
   const fetchQuestions = async () => {
     setLoading(true);
     setError(null);
@@ -49,7 +49,6 @@ const MockTestClient = ({ course }) => {
     fetchQuestions();
   }, [course]);
 
-  // Countdown timer logic
   useEffect(() => {
     if (countdown <= 0) {
       handleSubmit(); // Auto-submit when time runs out
@@ -82,7 +81,6 @@ const MockTestClient = ({ course }) => {
     }
   };
 
-  // Error Handling UI
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
@@ -99,7 +97,6 @@ const MockTestClient = ({ course }) => {
     );
   }
 
-  // Loading State UI
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
@@ -156,30 +153,83 @@ const MockTestClient = ({ course }) => {
         </button>
       </div>
 
-      {/* Result Modal */}
       {showResult && result && (
-        <>
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full animate__animated animate__fadeIn">
-              <h2 className="text-xl font-bold text-blue-900 dark:text-white">
-                {result.percentage >= 80
-                  ? "Congratulations!"
-                  : result.percentage >= 50
-                  ? "Well Done!"
-                  : "Better Luck Next Time!"}
-              </h2>
-              <p className="text-gray-700 dark:text-gray-300 mt-4">
-                You scored {result.score}/{result.total} ({result.percentage}%)
-              </p>
-              <button
-                onClick={() => router.push("/dashboard")}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                Return to Dashboard
-              </button>
-            </div>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg w-full animate__animated animate__fadeIn overflow-y-scroll h-auto">
+            {!showCorrections ? (
+              <>
+                <h2 className="text-xl font-bold text-blue-900 dark:text-white">
+                  {result.percentage >= 80
+                    ? "Congratulations!"
+                    : result.percentage >= 50
+                    ? "Well Done!"
+                    : "Better Luck Next Time!"}
+                </h2>
+                <p className="text-gray-700 dark:text-gray-300 mt-4">
+                  You scored {result.score}/{result.total} (
+                  {result.percentage}%)
+                </p>
+                <button
+                  onClick={() => setShowCorrections(true)}
+                  className="mt-4 px-4 py-2 mx-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  View Corrections
+                </button>
+                <button
+                  onClick={() => router.push("/dashboard")}
+                  className="mt-2 px-4 py-2 mx-1 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                >
+                  Return to Dashboard
+                </button>
+              </>
+            ) : (
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold text-blue-900 dark:text-white">
+                  Corrections
+                </h2>
+                {result.corrections.map((correction, index) => (
+                  <div
+                    key={index}
+                    className={`p-4 rounded-md shadow ${
+                      correction.isCorrect
+                        ? "bg-green-50 dark:bg-green-900"
+                        : "bg-red-50 dark:bg-red-900"
+                    }`}
+                  >
+                    <p className="font-bold text-blue-900 dark:text-white mb-2">
+                      Question {index + 1}: {correction.question}
+                    </p>
+                    <ul className="list-disc ml-4 space-y-1">
+                      {correction.options.map((option, i) => (
+                        <li
+                          key={i}
+                          className={`px-2 py-1 rounded-md ${
+                            i + 1 === correction.correctOption
+                              ? "bg-green-200 dark:bg-green-700"
+                              : i + 1 === correction.userAnswer
+                              ? "bg-red-200 dark:bg-red-700"
+                              : "text-gray-800 dark:text-gray-300"
+                          }`}
+                        >
+                          {option}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mt-2">
+                      <strong>Explanation:</strong> {correction.explanation}
+                    </p>
+                  </div>
+                ))}
+                <button
+                  onClick={() => setShowCorrections(false)}
+                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  Back to Result Summary
+                </button>
+              </div>
+            )}
           </div>
-        </>
+        </div>
       )}
     </div>
   );
