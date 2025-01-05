@@ -105,7 +105,7 @@ const Dashboard = () => {
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow">
             <h3 className="text-lg font-bold text-blue-900 dark:text-white">
-              Study Materials
+              Leaderboard
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
               Get study materials tailored to your specific needs.
@@ -123,7 +123,7 @@ const Dashboard = () => {
 
           <Link href={"/community"} className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow">
             <h3 className="text-lg font-bold text-blue-900 dark:text-white">
-              Community Support
+              Communities
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
               Engage with fellow students and share knowledge.
