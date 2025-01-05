@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { apiRequest } from "@/utils/api";
+import { useToast } from "@/contexts/ToastContext";
 
 const CommunityPageClient = ({ communityId }) => {
   const [community, setCommunity] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [sendLoading, setSendLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { showToast } = useToast();
 
   const fetchCommunityData = async () => {
     setLoading(true);
@@ -32,6 +35,7 @@ const CommunityPageClient = ({ communityId }) => {
     if (!newMessage.trim()) return;
 
     try {
+      setSendLoading(true);
       const response = await apiRequest(
         `communities/${communityId}/chat`,
         "POST",
@@ -41,7 +45,9 @@ const CommunityPageClient = ({ communityId }) => {
       setNewMessage("");
     } catch (error) {
       console.error("Failed to send message:", error.message);
-      alert("Failed to send message.");
+      showToast("Failed to send message.", "error");
+    } finally {
+      setSendLoading(false);
     }
   };
 
@@ -60,6 +66,7 @@ const CommunityPageClient = ({ communityId }) => {
   }
 
   if (error) {
+    showToast(error, "error");
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
         <p className="text-center text-xl text-red-600 dark:text-red-400 mb-4">
@@ -112,7 +119,13 @@ const CommunityPageClient = ({ communityId }) => {
         </div>
 
         {/* Message Input */}
-        <div className="flex gap-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSendMessage;
+          }}
+          className="flex gap-2"
+        >
           <input
             type="text"
             value={newMessage}
@@ -124,12 +137,12 @@ const CommunityPageClient = ({ communityId }) => {
             onClick={handleSendMessage}
             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
           >
-            Send
+            {sendLoading ? "Sending..." : "Send"}
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
 };
 
-export default CommunityPageClient
+export default CommunityPageClient;
