@@ -15,6 +15,7 @@ const MockTestClient = ({ course }) => {
   const [sessionId, setSessionId] = useState(null);
   const [showResult, setShowResult] = useState(false); // Result modal visibility
   const [result, setResult] = useState(null); // Test result
+  const [submitLoading, setSubmitLoading] = useState(false);
   const router = useRouter();
 
   // Fetch questions when the component mounts
@@ -65,6 +66,7 @@ const MockTestClient = ({ course }) => {
 
   const handleSubmit = async () => {
     try {
+      setSubmitLoading(true);
       const response = await apiRequest("mock-test/submit", "POST", {
         sessionId,
         answers,
@@ -75,6 +77,8 @@ const MockTestClient = ({ course }) => {
     } catch (error) {
       console.error("Failed to submit test:", error.message);
       alert("Failed to submit test. Please try again.");
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -112,7 +116,7 @@ const MockTestClient = ({ course }) => {
         <h1 className="text-3xl font-bold text-blue-900 dark:text-blue-300 mb-4">
           Mock Test: {course}
         </h1>
-        <p className="text-gray-700 dark:text-gray-400 mb-6">
+        <p className="text-gray-700 dark:text-gray-400 mb-6 sticky top-0 bg-white dark:bg-gray-800 p-4 rounded-md shadow">
           Time Left: {Math.floor(countdown / 60)}:
           {String(countdown % 60).padStart(2, "0")}
         </p>
@@ -148,7 +152,7 @@ const MockTestClient = ({ course }) => {
           onClick={handleSubmit}
           className="mt-6 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
         >
-          Submit Test
+          {submitLoading ? "Loading..." : "Submit Test"}
         </button>
       </div>
 
