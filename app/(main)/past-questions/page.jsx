@@ -21,7 +21,8 @@ const PastQuestionsPage = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {levels.map((level, index) => (
-            <div
+            (<Link
+              href={`${level.available ? level.href : ""}`}
               key={index}
               className={`p-6 rounded-lg shadow-md transition-shadow text-center ${
                 level.available
@@ -31,20 +32,17 @@ const PastQuestionsPage = () => {
             >
               <div className="flex justify-center items-center mb-4">
                 {level.available ? (
-                  <Link href={level.href}>
                     <BookOpen className="w-12 h-12 text-blue-500" />
-                  </Link>
                 ) : (
                   <Lock className="w-12 h-12 text-gray-400 dark:text-gray-500" />
                 )}
               </div>
               {level.available ? (
-                <Link
-                  href={level.href}
+                <h6
                   className="text-xl font-bold text-blue-900 dark:text-white hover:underline"
                 >
                   {level.name}
-                </Link>
+                </h6>
               ) : (
                 <p className="text-xl font-bold text-gray-500 dark:text-gray-400">
                   {level.name}
@@ -55,7 +53,7 @@ const PastQuestionsPage = () => {
                   Locked
                 </p>
               )}
-            </div>
+            </Link>)
           ))}
         </div>
       </div>
