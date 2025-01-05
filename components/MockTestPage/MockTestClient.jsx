@@ -157,7 +157,11 @@ const MockTestClient = ({ course }) => {
 
       {showResult && result && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg w-full animate__animated animate__fadeIn overflow-y-scroll h-auto">
+          <div
+            className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg w-full animate__animated animate__fadeIn overflow-y-scroll ${
+              showCorrections && "h-full"
+            }`}
+          >
             {!showCorrections ? (
               <>
                 <h2 className="text-xl font-bold text-blue-900 dark:text-white">
@@ -168,8 +172,8 @@ const MockTestClient = ({ course }) => {
                     : "Better Luck Next Time!"}
                 </h2>
                 <p className="text-gray-700 dark:text-gray-300 mt-4">
-                  You scored {result.score}/{result.total} (
-                  {result.percentage}%)
+                  You scored {result.score}/{result.total} ({result.percentage}
+                  %)
                 </p>
                 <button
                   onClick={() => setShowCorrections(true)}
