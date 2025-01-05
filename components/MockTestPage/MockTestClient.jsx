@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { apiRequest } from "@/utils/api";
 import "animate.css"; // Import animate.css
 import confetti from "canvas-confetti";
+import { useToast } from "@/contexts/ToastContext";
 
 const MockTestClient = ({ course }) => {
   const [questions, setQuestions] = useState([]);
@@ -18,6 +19,7 @@ const MockTestClient = ({ course }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [showCorrections, setShowCorrections] = useState(false); // Toggle corrections view
   const router = useRouter();
+  const { showToast } = useToast();
 
   const fetchQuestions = async () => {
     setLoading(true);
@@ -75,7 +77,7 @@ const MockTestClient = ({ course }) => {
       triggerConfetti(); // Trigger confetti animation when the test is submitted
     } catch (error) {
       console.error("Failed to submit test:", error.message);
-      alert("Failed to submit test. Please try again.");
+      showToast("Failed to submit test. Please try again.", "error");
     } finally {
       setSubmitLoading(false);
     }

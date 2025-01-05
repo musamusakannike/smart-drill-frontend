@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/utils/api";
 import Link from "next/link";
+import { useToast } from "@/contexts/ToastContext";
 
 const CommunityPage = () => {
   const [joinedCommunities, setJoinedCommunities] = useState([]);
   const [otherCommunities, setOtherCommunities] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { showToast } = useToast();
 
   // Fetch communities
   const fetchCommunities = async () => {
@@ -33,11 +35,11 @@ const CommunityPage = () => {
   const handleJoinCommunity = async (communityId) => {
     try {
       await apiRequest(`communities/${communityId}/join`, "PUT");
-      alert("You have successfully joined the community!");
+      showToast("You have successfully joined the community!", "success");
       fetchCommunities(); // Refresh the list
     } catch (error) {
       console.error("Failed to join community:", error.message);
-      alert("Failed to join the community. Please try again.");
+      showToast("Failed to join the community. Please try again.", "error");
     }
   };
 

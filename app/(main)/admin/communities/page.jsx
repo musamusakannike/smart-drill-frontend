@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { apiRequest } from "@/utils/api";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
+import { useToast } from "@/contexts/ToastContext";
 
 const AdminCommunitiesPage = () => {
   const [communities, setCommunities] = useState([]);
@@ -12,6 +13,7 @@ const AdminCommunitiesPage = () => {
   const [editMode, setEditMode] = useState(false);
   const [editingCommunity, setEditingCommunity] = useState(null);
   const [editDetails, setEditDetails] = useState({ name: "", description: "" });
+  const {  showToast } = useToast();
 
   const fetchCommunities = async () => {
     setLoading(true);
@@ -35,7 +37,7 @@ const AdminCommunitiesPage = () => {
       setCommunities((prev) => prev.filter((comm) => comm._id !== communityId));
     } catch (error) {
       console.error("Failed to delete community:", error.message);
-      alert("Failed to delete community.");
+      showToast("Failed to delete community.", "error");
     }
   };
 
@@ -64,7 +66,7 @@ const AdminCommunitiesPage = () => {
       setEditingCommunity(null);
     } catch (error) {
       console.error("Failed to edit community:", error.message);
-      alert("Failed to save changes.");
+      showToast("Failed to save changes.");
     }
   };
 
