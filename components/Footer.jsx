@@ -1,6 +1,22 @@
+"use client";
+import { useEffect } from "react";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 const Footer = () => {
+  useEffect(() => {
+    const wakeServer = async () => {
+      try {
+        const response = await fetch("https://smart-drill-backend.onrender.com/");
+        if (!response.ok) {
+          throw new Error("Failed to wake server");
+        }
+      } catch (error) {
+        console.error("Failed to wake server:", error.message);
+      }
+    }
+
+    wakeServer();
+  });
   return (
     <footer className="bg-gradient-to-b from-blue-100 to-blue-200 dark:from-gray-800 dark:to-gray-900 py-12">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
