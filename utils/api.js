@@ -1,5 +1,5 @@
-const BASE_URL = "https://smart-drill-backend.onrender.com/api/v1";
-// const BASE_URL = "http://localhost:8080/api/v1";
+// const BASE_URL = "https://smart-drill-backend.onrender.com/api/v1";
+const BASE_URL = "http://localhost:8080/api/v1";
 
 /**
  * Utility function to send API requests to the backend.
@@ -19,12 +19,12 @@ export const apiRequest = async (
   needsToken = true
 ) => {
   // Safely access localStorage only on the client-side
-  const token =
+  const accessToken =
     typeof window !== "undefined" && needsToken
-      ? localStorage.getItem("token")
+      ? localStorage.getItem("accessToken")
       : null;
 
-  if (!token && needsToken) {
+  if (!accessToken && needsToken) {
     throw new Error("Session expired. Please login again.");
   }
 
@@ -34,7 +34,9 @@ export const apiRequest = async (
     method,
     headers: {
       "Content-Type": "application/json",
-      ...(needsToken && token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(needsToken && accessToken
+        ? { Authorization: `Bearer ${accessToken}` }
+        : {}),
       ...headers,
     },
   };
@@ -46,30 +48,53 @@ export const apiRequest = async (
   try {
     const response = await fetch(url, options);
 
+    // If token is expired (401), try refreshing it
+    if (response.status === 401 && needsToken) {
+      console.warn("Access token expired, attempting to refresh...");
+
+      const refreshed = await refreshAccessToken(); // Call the refresh token logic
+      if (refreshed) {
+        // Retry the original request with a new token
+        return await apiRequest(endpoint, method, body, headers, needsToken);
+      }
+    }
+
     if (!response.ok) {
       const errorData = await response.json();
-
-      console.error("API request failed:", {
-        url,
-        status: response.status,
-        message: errorData.message,
-      });
-
-      const genericMessage =
-        response.status === 401
-          ? "Unauthorized access. Please check your credentials."
-          : response.status === 403
-          ? "You do not have permission to perform this action."
-          : response.status >= 500
-          ? "A server error occurred. Please try again later."
-          : "An error occurred while processing your request. Please try again.";
-
-      throw new Error(genericMessage);
+      throw new Error(
+        errorData.message || "An error occurred while processing your request."
+      );
     }
 
     return await response.json();
   } catch (error) {
-    console.error("Unexpected error:", error);
+    console.error("API request error:", error);
     throw error; // Re-throw error for higher-level handling
+  }
+};
+
+/**
+ * Function to refresh the access token using the refresh token.
+ */
+const refreshAccessToken = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
+      method: "POST",
+      credentials: "include", // Include refresh token in cookies
+    });
+
+    if (!response.ok) {
+      console.error("Failed to refresh access token:", response.status);
+      throw new Error("Session expired. Please login again.");
+    }
+
+    const data = await response.json();
+    localStorage.setItem("accessToken", data.data.accessToken); // Update token
+    return true;
+  } catch (error) {
+    console.error("Error refreshing access token:", error);
+    localStorage.removeItem("accessToken"); // Clear token on failure
+    window.location.href = "/login"; // Redirect to login
+    return false;
   }
 };
