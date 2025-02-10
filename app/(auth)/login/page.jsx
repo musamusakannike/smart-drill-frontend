@@ -26,15 +26,26 @@ const Login = () => {
     setMessage(null);
 
     try {
-      const response = await apiRequest("auth/login", "POST", formData, {}, false);
-      localStorage.setItem("token", response.data.token);
+      const response = await apiRequest(
+        "auth/login",
+        "POST",
+        formData,
+        {},
+        false
+      );
+
+      // Store tokens securely
+      localStorage.setItem("accessToken", response.data.accessToken);
+
       setMessage({
         type: "success",
         text: "Login successful! Redirecting...",
       });
+
+      // Redirect after success
       setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 1200);
+        window.location.href = "/dashboard"; // Replace with router.push if using Next.js Router
+      }, 1000);
     } catch (error) {
       setMessage({
         type: "error",
@@ -55,7 +66,7 @@ const Login = () => {
           Log In
         </header>
         <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
-          Don&apos;t have an account?{' '}
+          Don&apos;t have an account?{" "}
           <Link
             href="/signup"
             className="text-blue-600 dark:text-blue-400 hover:underline"
@@ -131,7 +142,6 @@ const Login = () => {
 };
 
 export default Login;
-
 
 // "use client";
 
