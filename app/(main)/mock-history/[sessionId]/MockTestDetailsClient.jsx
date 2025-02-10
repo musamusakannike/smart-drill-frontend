@@ -113,7 +113,7 @@ const MockTestDetailsClient = ({ sessionId }) => {
         </div>
 
         <button
-          onClick={() => router.push("/mock-test/history")}
+          onClick={() => router.push("/mock-history")}
           className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           Back to History
