@@ -1,5 +1,5 @@
-const BASE_URL = "https://smart-drill-backend.onrender.com/api/v1";
-// const BASE_URL = "http://localhost:8080/api/v1";
+// const BASE_URL = "https://smart-drill-backend.onrender.com/api/v1";
+const BASE_URL = "http://localhost:8080/api/v1";
 
 /**
  * Utility function to send API requests to the backend.
