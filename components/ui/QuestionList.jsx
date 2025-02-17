@@ -10,6 +10,7 @@ const QuestionList = ({ course }) => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [pageInput, setPageInput] = useState("1"); // New state for manual page input
 
   // Fetch questions on component mount or when page changes
   useEffect(() => {
@@ -22,6 +23,7 @@ const QuestionList = ({ course }) => {
         );
         setQuestions(response.data.questions);
         setTotalPages(response.data.totalPages);
+        setPageInput(currentPage.toString()); // Sync input with currentPage
       } catch (error) {
         console.error("Failed to fetch questions:", error.message);
       } finally {
@@ -41,6 +43,26 @@ const QuestionList = ({ course }) => {
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
+    }
+  };
+
+  // Handle manual page input submission
+  const handlePageInputChange = (e) => {
+    setPageInput(e.target.value);
+  };
+
+  const handlePageInputBlur = () => {
+    const parsedPage = parseInt(pageInput, 10);
+    if (!isNaN(parsedPage) && parsedPage > 0 && parsedPage <= totalPages) {
+      setCurrentPage(parsedPage);
+    } else {
+      setPageInput(currentPage.toString()); // Reset input if invalid
+    }
+  };
+
+  const handlePageInputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handlePageInputBlur();
     }
   };
 
@@ -76,7 +98,7 @@ const QuestionList = ({ course }) => {
             </div>
 
             {/* Pagination Controls */}
-            <div className="mt-8 flex justify-between items-center">
+            <div className="mt-8 flex justify-center items-center gap-4">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -88,9 +110,24 @@ const QuestionList = ({ course }) => {
               >
                 Previous
               </button>
-              <span className="text-blue-900 dark:text-white">
-                Page {currentPage} of {totalPages}
-              </span>
+
+              {/* Page Input */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  value={pageInput}
+                  onChange={handlePageInputChange}
+                  onBlur={handlePageInputBlur}
+                  onKeyDown={handlePageInputKeyDown}
+                  className="w-14 text-center px-2 py-1 border border-gray-400 dark:border-gray-600 rounded bg-white dark:bg-gray-700 dark:text-white"
+                  min="1"
+                  max={totalPages}
+                />
+                <span className="text-blue-900 dark:text-white">
+                  of {totalPages}
+                </span>
+              </div>
+
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
